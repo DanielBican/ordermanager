@@ -1,0 +1,191 @@
+swagger: '2.0'
+info:
+  description: API description of ordermanager
+  version: '0.1'
+  title: ordermanager-api
+host: localhost:8080
+schemes: 
+ - http
+paths:
+  /api/v1/products:
+    post:
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/ProductsRequestBodyModel'
+          x-examples:
+            application/json: |-
+              {
+                  "name": "monitor",
+                  "price": 250.00
+              }
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '500':
+          description: Bad Request
+          schema:
+            type: string
+    get:
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ProductsArrayModel'
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '500':
+          description: Bad Request
+          schema:
+            type: string
+  /api/v1/orders:
+    post:
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: false
+          schema:
+            $ref: '#/definitions/OrdersRequestBodyModel'
+          x-examples:
+            application/json: |-
+              {
+                  "buyer": "daniel@email.com",
+                  "products": [
+                          "5dd2c99231663627c9cbe0c5",
+                          "5dd2ca87e84b5f1f4e2a03f0"
+                  ]
+              }
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '500':
+          description: Bad Request
+          schema:
+            type: string
+    get:
+      produces:
+        - application/json
+      parameters:
+        - name: start
+          in: query
+          required: false
+          type: string
+          x-example: '2019-11-18T16:40:31.114'
+        - name: end
+          in: query
+          required: false
+          type: string
+          x-example: '2019-11-20T16:57:31.114'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/OrdersArrayModel'
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '500':
+          description: Bad Request
+          schema:
+            type: string
+  /api/v1/products/{objectId}:
+    patch:
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: objectId
+          required: true
+          type: string
+          description: Hex value of ObjectId
+          x-example: "5dd2cb23e84b5f1f4e2a03f2"
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/ProductsRequestBodyModel'
+          x-examples:
+            application/json: |-
+              {
+                  "name": "monitor",
+                  "price": 250.00
+              }
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          schema:
+            type: string
+        '404':
+          description: Resource Not found
+          schema:
+            type: string
+        '500':
+          description: Bad Request
+          schema:
+            type: string
+definitions:
+  OrdersRequestBodyModel:
+    properties:
+      buyer:
+        type: string
+      products:
+        type: array
+        items:
+          type: string
+          description: Hex value of an ObjectId
+  ProductsRequestBodyModel:
+    properties:
+      name:
+        type: string
+      price:
+        type: number
+        format: double
+  ProductsArrayModel:
+    type: array
+    items:
+      $ref: '#/definitions/Products'
+  Products:
+    properties:
+      name:
+        type: string
+      price:
+        type: number
+        format: double
+  OrdersArrayModel:
+    type: array
+    items:
+      $ref: '#/definitions/OrdersArray'
+  OrdersArray:
+    properties:
+      buyerEmail:
+        type: string
+      placed:
+        type: string
+      products:
+        type: array
+        items:
+          $ref: '#/definitions/Products'
+      totalProductsPrice:
+        type: number
+        format: double

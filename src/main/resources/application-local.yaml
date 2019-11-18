@@ -1,0 +1,15 @@
+server:
+  port: 9090
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27018
+      database: ordermanager
+      username: om
+      password: om1234
+      auto-index-creation: true
+logging:
+  level:
+    org.springframework.data: debug
+    com.danielbican: debug

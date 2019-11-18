@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+
+  mongo-dev:
+    build: ./mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root1234
+      MONGO_INITDB_DATABASE: ordermanager
+    ports:
+      - 27018:27017
+
+  ordermanager-dev:
+    build: ../
+    restart: always
+    depends_on:
+      - mongo-dev
+    links:
+      - mongo-dev
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo-dev
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root1234
